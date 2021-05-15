@@ -180,12 +180,18 @@ export class Fantasma {
     constructor(escena) {
         this.escena = escena;
         this.buscar = this.buscar.bind(this);
+        this.tarea = this.tarea.bind(this);
         this.buscar();
-        setInterval(() => {
-            let pos = this.pathfinder.camino.shift();
-            if (pos) this.moverse(pos.x, pos.y);
-            else if (!this.siguiendoAPacman) this.pathfinder.asignarNuevaUbicacionAleatoria();
-        }, VELOCIDAD);
+        setInterval(this.tarea, VELOCIDAD);
+    }
+
+    tarea() {
+        let pos = this.pathfinder.camino.shift();
+        if (pos) this.moverse(pos.x, pos.y);
+        else if (!this.siguiendoAPacman) {
+            this.pathfinder.asignarNuevaUbicacionAleatoria();
+            this.tarea();
+        }
     }
 
     buscar() {
