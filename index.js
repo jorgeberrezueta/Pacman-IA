@@ -85,18 +85,13 @@ window.onload = function() {
         if (nivel[nuevoY][nuevoX] === 1 || nivel[nuevoY][nuevoX] === 3) {
             return;
         } 
-        // if (escena.pacman.x !== nuevoX) escena.pacman.x = nuevoX;
-        // if (escena.pacman.y !== nuevoY) escena.pacman.y = nuevoY;
         escena.pacman.moverse(nuevoX, nuevoY);
         escena.pacman.direccion = direccion;
-        if (nivel[nuevoY][nuevoX] === 2) {
+        if ([2, 6].includes(nivel[nuevoY][nuevoX])) {
             nivel[nuevoY][nuevoX] = 0;
-            if (performance.now() - ultimoSonido > 600) { 
-                // new Audio('audio/pacman_chomp.wav').play();
-                ultimoSonido = performance.now();
-            }
         }
     }, VELOCIDAD);
 
     window.escena = escena;
+    window.ctx = ctx;
 }
