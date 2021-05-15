@@ -1,0 +1,17 @@
+<svg width="1300" height="1300" viewBox="0 0 1300 1300" fill="none" shape-rendering="crispEdges" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0)">
+<rect x="400" width="300" height="1300" fill="#FFEB3B"/>
+<rect x="700" width="200" height="1300" fill="#FFEB3B"/>
+<rect x="200" y="100" width="200" height="1100" fill="#FFEB3B"/>
+<rect x="900" y="100" width="200" height="1100" fill="#FFEB3B"/>
+<rect y="400" width="100" height="500" fill="#FFEB3B"/>
+<rect x="1200" y="400" width="100" height="500" fill="#FFEB3B"/>
+<rect x="100" y="200" width="100" height="900" fill="#FFEB3B"/>
+<rect x="1100" y="200" width="100" height="900" fill="#FFEB3B"/>
+</g>
+<defs>
+<clipPath id="clip0">
+<rect width="1300" height="1300" fill="white"/>
+</clipPath>
+</defs>
+</svg>
