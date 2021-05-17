@@ -83,7 +83,7 @@ export class Pacman {
 
 const height = nivel.length;
 const width = nivel[0].length;
-const transparentes = [0, 2];
+const transparentes = [0, 2, 6];
 
 export class Pathfinder {
     fantasma;
