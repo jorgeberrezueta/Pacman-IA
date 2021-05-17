@@ -4,13 +4,15 @@
         <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
     </head>
     <body class="bg-white text-black">
-        <div class="w-full py-10 px-20">
-            <div class="flex flex-col items-center pb-5">
-                <h1 class="text-xl">Pacman</h1>
-                <h1 class="text-sm">Clase de Inteligencia Artificial</h1>
-            </div>
-            <div class="bg-gray-100 rounded p-5 border flex flex-col items-center">
+        <div class="flex flex-col w-full py-6 px-20 items-center">
+            <h1 class="text-xl">Pacman</h1>
+            <h1 class="text-sm mb-5">Clase de Inteligencia Artificial</h1>
+            <div>
                 <canvas id="juego" width="560" height="620" class="border"></canvas>
+            </div>
+            <div>
+                <input type="checkbox" id="mostrar-pathfind" name="mostrar-pathfind" value="mostrar-pathfind" onclick="mostrarPathfind = !mostrarPathfind">
+                <label for="mostrar-pathfind"> Mostrar pathfinder</label><br>
             </div>
         </div>
         <script src="index.js" type="module"></script>

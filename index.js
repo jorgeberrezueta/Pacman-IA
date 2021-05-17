@@ -1,5 +1,7 @@
 import { Escena } from './js/classes.js';
-import { TAMANO_ENTIDADES, VELOCIDAD } from './js/util.js';
+import { posicionRelativa, TAMANO_ENTIDADES, VELOCIDAD } from './js/util.js';
+
+window.mostrarPathfind = false;
 
 window.onload = function() {
     const canvas = document.getElementById("juego");
@@ -24,35 +26,16 @@ window.onload = function() {
         }
     }, false);
 
-    document.addEventListener('keyup', function(event) {
-        if (ultimaTecla === event.key) {
-            // direccion = 0;
-        }
-        // escena.pacman.direccion = direccion;
+    document.addEventListener('mousedown', function(event) {
+        var rect = event.target.getBoundingClientRect();
+        var x = Math.floor((event.clientX - rect.left) / TAMANO_ENTIDADES);
+        var y = Math.floor((event.clientY - rect.top) / TAMANO_ENTIDADES);
+        console.log(x, y);
     }, false);
 
     function revisarTecla() {
         // if (nuevaDireccion === 0) return;
-        let nuevoX = escena.pacman.x;
-        let nuevoY = escena.pacman.y;
-        switch (nuevaDireccion) {
-            case 1:
-                nuevoX -= 1;
-                if (nuevoX < 0) nuevoX = (escena.width / TAMANO_ENTIDADES) - 1;
-                break;
-            case 2:
-                nuevoY -= 1;
-                if (nuevoY < 0) nuevoY = (escena.height / TAMANO_ENTIDADES) - 1;
-                break;
-            case 3:
-                nuevoX += 1;
-                nuevoX %= (escena.width / TAMANO_ENTIDADES);
-                break;
-            case 4:
-                nuevoY += 1;
-                nuevoY %= (escena.height / TAMANO_ENTIDADES);
-                break;
-        }
+        let { nuevoX, nuevoY } = posicionRelativa(escena.pacman.x, escena.pacman.y, nuevaDireccion);
         if (nivel[nuevoY][nuevoX] !== 1 && nivel[nuevoY][nuevoX] !== 3) {
             direccion = nuevaDireccion;
         } 
@@ -61,33 +44,16 @@ window.onload = function() {
     let ultimoSonido = 0;
 
     setInterval(() => {
-        // if (direccion === 0) return;
-        let nuevoX = escena.pacman.x;
-        let nuevoY = escena.pacman.y;
-        switch (direccion) {
-            case 1:
-                nuevoX -= 1;
-                if (nuevoX < 0) nuevoX = (escena.width / TAMANO_ENTIDADES) - 1;
-                break;
-            case 2:
-                nuevoY -= 1;
-                if (nuevoY < 0) nuevoY = (escena.height / TAMANO_ENTIDADES) - 1;
-                break;
-            case 3:
-                nuevoX += 1;
-                nuevoX %= (escena.width / TAMANO_ENTIDADES);
-                break;
-            case 4:
-                nuevoY += 1;
-                nuevoY %= (escena.height / TAMANO_ENTIDADES);
-                break;
-        }
+        let { nuevoX, nuevoY } = posicionRelativa(escena.pacman.x, escena.pacman.y, direccion);
         if (nivel[nuevoY][nuevoX] === 1 || nivel[nuevoY][nuevoX] === 3) {
             return;
-        } 
+        }
         escena.pacman.moverse(nuevoX, nuevoY);
         escena.pacman.direccion = direccion;
         if ([2, 6].includes(nivel[nuevoY][nuevoX])) {
+            if (nivel[nuevoY][nuevoX] == 6) {
+                escena.pacman.darInvulnerabilidad();
+            }
             nivel[nuevoY][nuevoX] = 0;
         }
     }, VELOCIDAD);
