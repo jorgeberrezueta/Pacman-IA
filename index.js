@@ -1,4 +1,4 @@
-import { Escena } from './js/classes.js';
+import { Escena } from './js/escena.js';
 import { posicionRelativa, TAMANO_ENTIDADES, VELOCIDAD } from './js/util.js';
 
 window.mostrarPathfind = false;
@@ -20,6 +20,7 @@ window.onload = function() {
     let ultimaTecla = 0; 
 
     document.addEventListener('keydown', function(event) {
+        if (escena.estado > 0) return;
         if (event.keyCode >= 37 && event.keyCode <= 40) {
             nuevaDireccion = event.keyCode - 36;
             revisarTecla();
@@ -30,7 +31,7 @@ window.onload = function() {
         var rect = event.target.getBoundingClientRect();
         var x = Math.floor((event.clientX - rect.left) / TAMANO_ENTIDADES);
         var y = Math.floor((event.clientY - rect.top) / TAMANO_ENTIDADES);
-        console.log(x, y);
+        escena.click(x, y);
     }, false);
 
     function revisarTecla() {
@@ -41,9 +42,8 @@ window.onload = function() {
         } 
     }
 
-    let ultimoSonido = 0;
-
     setInterval(() => {
+        if (escena.estado > 0) return;
         let { nuevoX, nuevoY } = posicionRelativa(escena.pacman.x, escena.pacman.y, direccion);
         if (nivel[nuevoY][nuevoX] === 1 || nivel[nuevoY][nuevoX] === 3) {
             return;

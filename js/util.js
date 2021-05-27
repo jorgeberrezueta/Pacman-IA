@@ -8,8 +8,11 @@ export const FANTASMA_COMIBLE_SPRITE = 'sprites/fantasma_comible.svg';
 export const TAMANO_ENTIDADES = 20;
 export const VELOCIDAD = 200; // Mas alto = mas lento
 export const VELOCIDAD_COMIBLE = 300; // Mas alto = mas lento
+
+export const TRANSPARENTES = [0, 2, 6];
+
 //29*31
-export const nivel = [
+export const plantilla = [
 	[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
 	[1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1],
 	[1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1],
@@ -42,6 +45,14 @@ export const nivel = [
 	[1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1],
 	[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 ]
+
+export var nivel = [];
+
+nuevoNivel();
+
+export function nuevoNivel() {
+    nivel = plantilla.map((arr) => arr.slice());
+}
 
 export const direcciones = {
     REPOSO:     {x:  0, y:  0, rot: 0},
