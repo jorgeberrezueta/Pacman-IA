@@ -103,7 +103,10 @@ export class Fantasma {
     }
 
     matar() {
-        this.moverse(this.xi, this.yi);
+        this.x = this.xi;
+        this.y = this.yi;
+        this.nx = escalar(this.x);
+        this.ny = escalar(this.y);
         this.fechaMuerte = performance.now();
         this.pathfinder.camino = [];
     }
