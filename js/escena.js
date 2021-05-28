@@ -30,8 +30,10 @@ export class Escena {
                     if (!this.pacman.invulnerable) {
                         this.perdida();
                     } else {
-                        fantasma.matar();
-                        this.puntos += 300;
+                        if (!fantasma.estaMuerto()) {
+                            fantasma.matar();
+                            this.puntos += 300;
+                        }
                     }
                 }
             }
