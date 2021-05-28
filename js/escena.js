@@ -31,6 +31,7 @@ export class Escena {
                         this.perdida();
                     } else {
                         fantasma.matar();
+                        this.puntos += 300;
                     }
                 }
             }
