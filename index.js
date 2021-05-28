@@ -1,7 +1,9 @@
 import { Escena } from './js/escena.js';
-import { posicionRelativa, TAMANO_ENTIDADES, VELOCIDAD } from './js/util.js';
+import { posicionRelativa, TAMANO_ENTIDADES } from './js/util.js';
 
 window.mostrarPathfind = false;
+
+// new FontFace('GameOver', 'url(\'./ttf/game_over.ttf\')').load();
 
 window.onload = function() {
     const canvas = document.getElementById("juego");
@@ -16,11 +18,13 @@ window.onload = function() {
     window.requestAnimationFrame(dibujar);
 
     let nuevaDireccion = 0;
-    let direccion = 0;
-    let ultimaTecla = 0; 
 
     document.addEventListener('keydown', function(event) {
-        if (escena.estado > 0) return;
+        if (escena.estado >= 1) {
+            if (event.keyCode == 32) {
+                escena.reiniciar();
+            } else return;
+        }
         if (event.keyCode >= 37 && event.keyCode <= 40) {
             nuevaDireccion = event.keyCode - 36;
             revisarTecla();
@@ -37,26 +41,10 @@ window.onload = function() {
     function revisarTecla() {
         // if (nuevaDireccion === 0) return;
         let { nuevoX, nuevoY } = posicionRelativa(escena.pacman.x, escena.pacman.y, nuevaDireccion);
-        if (nivel[nuevoY][nuevoX] !== 1 && nivel[nuevoY][nuevoX] !== 3) {
-            direccion = nuevaDireccion;
+        if (escena.nivel[nuevoY][nuevoX] !== 1 && escena.nivel[nuevoY][nuevoX] !== 3) {
+            escena.direccion = nuevaDireccion;
         } 
     }
-
-    setInterval(() => {
-        if (escena.estado > 0) return;
-        let { nuevoX, nuevoY } = posicionRelativa(escena.pacman.x, escena.pacman.y, direccion);
-        if (nivel[nuevoY][nuevoX] === 1 || nivel[nuevoY][nuevoX] === 3) {
-            return;
-        }
-        escena.pacman.moverse(nuevoX, nuevoY);
-        escena.pacman.direccion = direccion;
-        if ([2, 6].includes(nivel[nuevoY][nuevoX])) {
-            if (nivel[nuevoY][nuevoX] == 6) {
-                escena.pacman.darInvulnerabilidad();
-            }
-            nivel[nuevoY][nuevoX] = 0;
-        }
-    }, VELOCIDAD);
 
     window.escena = escena;
     window.ctx = ctx;

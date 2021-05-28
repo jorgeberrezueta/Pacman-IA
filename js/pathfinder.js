@@ -1,18 +1,26 @@
 import { TRANSPARENTES, TAMANO_ENTIDADES, escalar } from './util.js';
 
-const height = nivel.length;
-const width = nivel[0].length;
-
 export class Pathfinder {
     fantasma;
     src = {x: 1, y: 1}; // {x, y}
     destino = {x: 1, y: 1};
     camino = [];
+    limites;
+
+    height;
+    width;
+
+    // color = "#" + Math.floor(Math.random()*16777215).toString(16);
+    color;
 
     // Implementación de https://www.techwithtim.net/tutorials/breadth-first-search/
     
-    constructor(fantasma) {
+    constructor(fantasma, color, limites) {
         this.fantasma = fantasma;
+        this.limites = limites;
+        this.height = this.fantasma.escena.nivel.length;
+        this.width = this.fantasma.escena.nivel[0].length
+        this.color = color;
     }
 
     buscarFinal(movimientos) {
@@ -43,8 +51,8 @@ export class Pathfinder {
             else if (c === "U") j--;
             else if (c === "D") j++;
         }
-        if (i >= width || i < 0 || j >= height || j < 0) return false;
-        return validos.includes(nivel[j][i]);
+        if (i >= this.width || i < 0 || j >= this.height || j < 0) return false;
+        return validos.includes(this.fantasma.escena.nivel[j][i]);
     }
 
     buscarCamino() {
@@ -132,14 +140,15 @@ export class Pathfinder {
     }
 
     asignarNuevaUbicacionAleatoria() {
-        let pos = this.fantasma.escena.ubicacionVaciaAleatoria();
+        let pos = this.fantasma.escena.ubicacionVaciaAleatoria(this.limites);
         this.destino.x = pos.x;
         this.destino.y = pos.y;
         this.buscar();
     }
 
     render(ctx) {
-        ctx.fillStyle = "#00AA00"
+        // ctx.fillStyle = "#00AA00"
+        ctx.fillStyle = this.color;
         for (let c of this.camino) {
             ctx.fillRect(escalar(c.x) + 2, escalar(c.y) + 2, TAMANO_ENTIDADES - 4, TAMANO_ENTIDADES - 4);
         }

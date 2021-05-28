@@ -13,10 +13,10 @@ export class Pacman {
     escena;
     direccion = 0;
     sprite;
-    x = 14;
-    y = 23;
-    nx = escalar(this.x);
-    ny = escalar(this.y);
+    x;
+    y;
+    nx;
+    ny;
     invulnerable;
 
     fechaMoviendose;
@@ -24,6 +24,10 @@ export class Pacman {
 
     constructor(escena) {
         this.escena = escena;
+        this.x = 14;
+        this.y = 23;
+        this.nx = escalar(this.x);
+        this.ny = escalar(this.y);
     }
 
     moverse(x ,y) {
@@ -33,15 +37,15 @@ export class Pacman {
         }
         this.x = x;
         this.y = y;
-        this.escena.fantasma.buscar();
+        this.escena.fantasmas.forEach((f) => f.buscar());
     }
 
     darInvulnerabilidad() {
         this.invulnerable = true;
-        this.escena.fantasma.actualizarVelocidad();
+        this.escena.fantasmas.forEach((f) => f.actualizarVelocidad());
         setTimeout(() => {
             this.invulnerable = false;
-            this.escena.fantasma.actualizarVelocidad();
+            this.escena.fantasmas.forEach((f) => f.actualizarVelocidad());
         }, 10000);
     }
 
@@ -56,8 +60,6 @@ export class Pacman {
         var sprite = pacman_sprites[Math.min(Math.max(0, i), pacman_sprites.length - 1)];
         ctx.fillStyle = "#000000";
         ctx.save();
-        // let nx;
-        // let ny;
         if (performance.now() - this.fechaMoviendose > VELOCIDAD) { // Reposo
             this.nx = this.x * TAMANO_ENTIDADES;
             this.ny = this.y * TAMANO_ENTIDADES;

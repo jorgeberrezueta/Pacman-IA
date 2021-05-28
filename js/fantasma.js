@@ -1,26 +1,37 @@
-import { TAMANO_ENTIDADES, FANTASMA_SPRITE, FANTASMA_COMIBLE_SPRITE, VELOCIDAD, VELOCIDAD_COMIBLE, crearImagen, escalar } from "./util.js";
+import { TAMANO_ENTIDADES, FANTASMA_COMIBLE_SPRITE, VELOCIDAD, VELOCIDAD_COMIBLE, crearImagen, escalar } from "./util.js";
 import { Pathfinder } from './pathfinder.js';
 
-const fantasma_sprite = crearImagen(FANTASMA_SPRITE);
 const fantasma_comible_sprite = crearImagen(FANTASMA_COMIBLE_SPRITE);
 
 export class Fantasma {
-    x = 14 + 1;
-    y = 14 + 1;
-    nx;
+    xi; // Posicion inicial
+    yi;
+    x; // Posicion actual
+    y;
+    nx; // Posicion actual exacta (pixeles)
     ny;
     direccion = 0;
     escena;
-    pathfinder = new Pathfinder(this);
+    pathfinder;
     fechaMoviendose = 0;
     moviendoseDesde = {x: this.x, y: this.y}; // {x,y}
     siguiendoAPacman = true;
     velocidad = VELOCIDAD;
+    sprite;
+    rango;
+    fechaMuerte = -100000;
 
     tareaID;
 
-    constructor(escena) {
+    constructor(escena, x, y, urlSprite, rango, color, limites) {
         this.escena = escena;
+        this.xi = x;
+        this.yi = y;
+        this.x = x;
+        this.y = y;
+        this.sprite = crearImagen(urlSprite);
+        this.rango = rango;
+        this.pathfinder = new Pathfinder(this, color, limites)
         this.buscar = this.buscar.bind(this);
         this.tarea = this.tarea.bind(this);
         this.buscar();
@@ -37,6 +48,8 @@ export class Fantasma {
     }
 
     tarea() {
+        if (escena.estado > 0) return; // Fin del juego
+        if (this.estaMuerto()) return;
         let pos = this.pathfinder.camino.shift();
         if (pos) this.moverse(pos.x, pos.y);
         else if (!this.siguiendoAPacman) {
@@ -49,15 +62,15 @@ export class Fantasma {
         let pacman = this.escena.pacman;
         this.pathfinder.src.x = this.x;
         this.pathfinder.src.y = this.y;
-        if (this.siguiendoAPacman && this.distanciaAPacman() > Math.pow(10, 2)) {
-            this.siguiendoAPacman = false
-            this.pathfinder.asignarNuevaUbicacionAleatoria();
-        } else {
-            if (this.distanciaAPacman() < Math.pow(10, 2)) {
-                this.pathfinder.destino.x = pacman.x;
-                this.pathfinder.destino.y = pacman.y;
-                this.pathfinder.buscar();
+        if (this.distanciaAPacman() > Math.pow(this.rango, 2)) { // Distancia de busqueda
+            if (this.siguiendoAPacman) {
+                this.siguiendoAPacman = false
+                this.pathfinder.asignarNuevaUbicacionAleatoria();
             }
+        } else {
+            this.pathfinder.destino.x = pacman.x;
+            this.pathfinder.destino.y = pacman.y;
+            this.pathfinder.buscar();
         }
     }
 
@@ -69,6 +82,7 @@ export class Fantasma {
         }
         this.x = x;
         this.y = y;
+        if (this.estaMuerto()) return;
         this.buscar();
     }
 
@@ -84,13 +98,23 @@ export class Fantasma {
         return dx * dx + dy * dy;
     }
 
+    estaMuerto() {
+        return performance.now() - this.fechaMuerte < 10000;
+    }
+
+    matar() {
+        this.moverse(this.xi, this.yi);
+        this.fechaMuerte = performance.now();
+        this.pathfinder.camino = [];
+    }
+
     render(ctx) {
-        if (escena.estado > 0) return; // Game over
-        let sprite;
-        if (this.escena.pacman.invulnerable) sprite = fantasma_comible_sprite;
-        else sprite = fantasma_sprite;
-        // let nx;
-        // let ny;
+        if (this.estaMuerto()) return;
+        let spriteVisible;
+
+        if (this.escena.pacman.invulnerable) spriteVisible = fantasma_comible_sprite;
+        else spriteVisible = this.sprite;
+
         if (performance.now() - this.fechaMoviendose > this.velocidad) { // Reposo
             this.nx = escalar(this.x);
             this.ny = escalar(this.y);
@@ -100,8 +124,7 @@ export class Fantasma {
             this.nx = escalar(this.moviendoseDesde.x) - dx * ((performance.now() - this.fechaMoviendose) / this.velocidad);
             this.ny = escalar(this.moviendoseDesde.y) - dy * ((performance.now() - this.fechaMoviendose) / this.velocidad);
         }
-        ctx.drawImage(sprite, this.nx, this.ny, TAMANO_ENTIDADES, TAMANO_ENTIDADES);
-        if (window.mostrarPathfind) this.pathfinder.render(ctx);
+        ctx.drawImage(spriteVisible, this.nx, this.ny, TAMANO_ENTIDADES, TAMANO_ENTIDADES);
     }
 
 }
